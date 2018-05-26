@@ -1,0 +1,3 @@
+echo building project A1_lexer...
+java -Xmx500M org.antlr.v4.Tool A1_lexer.g4
+javac -g ./*.java -d ./
