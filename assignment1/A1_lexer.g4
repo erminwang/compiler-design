@@ -11,8 +11,34 @@ fragment Char
 | '\\'.
 ;
 
+fragment Alpha
+: [a-zA-Z_]
+;
+
+fragment Digit
+: [0-9]
+;
+
+fragment Alpha_num
+: Alpha
+| Digit
+;
+
+fragment Hex_digit
+: Digit
+| [a-fA-F]
+;
+
 WhiteSpace
 : Delim+ -> skip
+;
+
+Char_literal
+: '\''  Char '\''
+;
+
+Str_literal
+: '\"' (Char)*? '\"'
 ;
 
 Class
@@ -20,62 +46,51 @@ Class
 ;
 
 Program
-: 'program'
+: 'Program'
+;
+
+Void
+: 'void'
 ;
 
 If
 : 'if'
 ;
 
-LPar
-: '('
+Else
+: 'else'
 ;
 
-RPar
-: ')'
+For
+: 'for'
 ;
 
-LBra
-: '['
+While
+: 'while'
 ;
 
-RBra
-: ']'
+Ret
+: 'return'
 ;
 
-LCur
-: '{'
+Brk
+: 'break'
 ;
 
-RCur
-: '}'
+Cnt
+: 'continue'
 ;
 
-Id
-: Alpha Alpha_num*
+Callout
+: 'callout'
 ;
 
-Alpha
-: [a-zA-Z] '_'
+Switch
+: 'switch'
 ;
 
-Alpha_num
-: Alpha
-| Digit
-;
-
-Digit
-: [0-9]
-;
-
-Hex_digit
-: Digit
-| [a-fA-F]
-;
-
-Int_literal
-: Hex_literal
-| Decimal_literal
+Case
+: 'case'
 ;
 
 Decimal_literal
@@ -91,10 +106,78 @@ Boolean_literal
 | 'false'
 ;
 
-Char_literal
-: '\''  Char '\''
+Type
+: 'int'
+| 'boolean'
 ;
 
-String_literal
-: '\"' (Char)*? '\"'
+Ident
+: Alpha Alpha_num*
+;
+
+RelOp
+: '<'
+| '>'
+| '<='
+| '>='
+;
+
+AssignOp
+: '='
+| '+='
+| '-='
+;
+
+ArithOp
+: '+'
+| '-'
+| '*'
+| '/'
+| '%'
+;
+
+ConOp
+: '&&'
+| '||'
+;
+
+LParenthesis
+: '('
+;
+
+RParenthesis
+: ')'
+;
+
+LCurlyBrace
+: '{'
+;
+
+RCurlyBrace
+: '}'
+;
+
+LBracket
+: '['
+;
+
+RBracket
+: ']'
+;
+
+SemiColon
+: ';'
+;
+
+Colon
+: ':'
+;
+
+Comma
+: ','
+;
+
+EqOp
+: '=='
+| '!='
 ;
