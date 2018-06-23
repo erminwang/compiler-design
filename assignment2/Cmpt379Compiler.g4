@@ -372,8 +372,10 @@ statement returns [int id]
 | Switch expr '{' cases '}'
 {
 	$id = PrintNode("Switch");
+	$id2 = PrintNode("CaseSeq");
 	PrintEdge($id, $expr.id);
-	PrintEdges($id, $cases.s);
+	PrintEdges($id2, $cases.s);
+	PrintEdge($id, $id2);
 }
 | While '(' expr ')' statement
 {
@@ -409,20 +411,77 @@ method_call returns [int id]
 : Ident '(' arguments ')'
 {
 	$id = PrintNode("Call");
-	PrintEdge($id, $Ident.id);
-	PrintEdges($id, $arguments.s);
+	PrintEdge($id, $Ident.text);
+	PrintEdges($id, $arguments.id);
+}
+| Callout '(' Str nextCalloutArgs ')'
+{
+    $id = PrintNode("Callout");
+    PrintEdge($id, PrintNode("StringArg"));
+    PrintEdges($id, $nextCalloutArgs.s);
 }
 ;
 
-arguments returns [MySet s]
-: a=arguments ',' expr
+nextCalloutArgs returns [MySet s]
+: c=nextCalloutArgs ',' calloutArg
+{
+    $s = $c.s;
+    $s.ExtendArray($calloutArg.id);
+}
+|
+{
+    $s = new MySet();
+}
+;
 
+calloutArg returns [int id]
+: expr
+{
+    $id = PrintNode("CalloutExpr");
+    PrintEdge($id, $expr.id);
+}
+| Str
+{
+    $id = PrintNode("CalloutString");
+    PrintEdge($id, PrintNode("StringArg"));
+}
+;
+
+arguments returns [int id]
+: expr nextArgs
+{
+	$id = PrintNode("ExprArg");
+	PrintEdge($id, $expr.id);
+	PrintEdges($id, $nextArgs.s);
+}
+|
+{
+	$id = -1;
+}
+;
+
+nextArgs returns [MySet s]
+: a=nextArgs ',' expr
+{
+    $s = $a.s;
+    $s.ExtendArray($expr.id);
+}
+|
+{
+    $s = new MySet();
+}
+;
 
 cases returns [MySet s]
 : c=cases case
 {
 	$s = $c.s;
 	$s.ExtendArray($case.id);
+}
+| case
+{
+    $s = new Myset();
+    $s.ExtendArray($case.id);
 }
 ;
 
@@ -431,7 +490,9 @@ case returns [int id]
 {
 	$id = PrintNode("Case");
 	PrintEdge($id, $literal.text);
-	PrintEdge($id, $statements.id);
+	if($statements.id != -1) {
+	    PrintEdge($id, $statements.id);
+	}
 }
 ;
 
@@ -443,19 +504,63 @@ case returns [int id]
 | - <expr>
 | ! <expr>
 | ( <expr> ) */
+expr returns [int id]
+: location
+{
+	$id = PrintNode("LocExpr");
+	PrintEdge($id, $location.id);
+}
+| method_call
+{
+    $id = PrintNode("CallExpr");
+    PrintEdge($id, $method_call.id);
+}
+| literal
+{
+	$id = PrintNode("ConstExpr");
+	PrintEdge($id, PrintNode($literal.text));
+}
+| e1=expr binOp e2=expr
+{
+	$id = PrintNode("Bin_expr");
+	PrintEdge($id, $e1.id);
+	PrintEdge($id, PrintNode($binOp.text));
+	PrintEdge($id, $e2.id);
+}
+| '-' expr
+{
+    $id = PrintNode("NegExpr");
+    PrintEdge($id, $expr.id);
+}
+| '!' expr
+{
+    $id = PrintNode("NotExpr");
+    PrintEdge($id, $expr.id);
+}
+| '(' expr ')'
+{
+    $id = PrintNode("ExprArg");
+    PrintEdge($id, $expr.id);
+}
+;
 
 
 /* <location>
 -> <id>
 | <id> [ <expr> ] */
-/* location returns [int id]
+location returns [int id]
 : Ident
-| Ident '[' expr ']'
 {
-	$id = PrintNode("Loc");
+    $id = PrintNode("Loc");
 	PrintEdge($id, PrintNode($Ident.text));
 }
-; */
+| Ident '[' expr ']'
+{
+    $id = PrintNode("LocExpr2");
+    PrintEdge($id, $Ident.id);
+    PrintEdge($id, $expr.id);
+}
+;
 
 // Session 3: Lexical definition
 
