@@ -14,7 +14,7 @@
       <file leaf-file-name="Cmpt379Compiler.g4" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Cmpt379Compiler.g4">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
+            <state relative-caret-position="-3690">
               <caret line="129" column="22" lean-forward="true" selection-start-line="129" selection-start-column="22" selection-end-line="129" selection-end-column="22" />
               <folding>
                 <element signature="e#65#95#1" expanded="true" />
@@ -41,8 +41,8 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>String</find>
-      <find>id</find>
       <find>ExtendArray</find>
+      <find>id</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -152,7 +152,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="67" y="25" width="1853" height="1055" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
@@ -209,7 +208,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Cmpt379Compiler.g4">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="-3690">
           <caret line="129" column="22" lean-forward="true" selection-start-line="129" selection-start-column="22" selection-end-line="129" selection-end-column="22" />
           <folding>
             <element signature="e#65#95#1" expanded="true" />

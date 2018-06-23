@@ -119,13 +119,13 @@ prog
 	int id = PrintNode("Program");
 
 	if ($field_decls.s.size > 0) {
-		int id2 = PrintNode("Field_decls");
+		int id2 = PrintNode("FieldDecls");
 		PrintEdges(id2, $field_decls.s);
 		PrintEdge(id, id2);
 	}
 
 	if ($method_decls.s.size > 0) {
-		int id2 = PrintNode("Method_decls");
+		int id2 = PrintNode("MethodDecls");
 		PrintEdges(id2, $method_decls.s);
 		PrintEdge(id, id2);
 	}
@@ -270,7 +270,7 @@ block returns [int id]
 	$id = -1;
 	if ($var_decls.s.size > 0) {
 		$id = PrintNode("Block");
-		int id2 = PrintNode("VarDecl");
+		int id2 = PrintNode("VarDecls");
 		PrintEdges(id2, $var_decls.s);
 		PrintEdge($id, id2);
 	}
@@ -353,29 +353,29 @@ statement returns [int id]
 | If '(' expr ')' b1=block Else b2=block
 {
 	$id = PrintNode("IfElse");
-	$id2 = PrintNode("If");
-	$id3 = PrintNode("Else");
-	PrintEdge($id2, $expr.id);
-	PrintEdge($id2, $b1.id);
-	PrintEdge($id3, $b2.id);
-	PrintEdge($id, $id2);
-	PrintEdge($id, $id3);
+	int id2 = PrintNode("If");
+	int id3 = PrintNode("Else");
+	PrintEdge(id2, $expr.id);
+	PrintEdge(id2, $b1.id);
+	PrintEdge(id3, $b2.id);
+	PrintEdge($id, id2);
+	PrintEdge($id, id3);
 }
 | If '(' expr ')' block
 {
 	$id = PrintNode("IfElse");
-	$id2 = PrintNode("If");
-	PrintEdge($id2, $expr.id);
-	PrintEdge($id2, $block.id);
-	PrintEdge($id, $id2);
+	int id2 = PrintNode("If");
+	PrintEdge(id2, $expr.id);
+	PrintEdge(id2, $block.id);
+	PrintEdge($id, id2);
 }
 | Switch expr '{' cases '}'
 {
 	$id = PrintNode("Switch");
-	$id2 = PrintNode("CaseSeq");
+	int id2 = PrintNode("CaseSeq");
 	PrintEdge($id, $expr.id);
-	PrintEdges($id2, $cases.s);
-	PrintEdge($id, $id2);
+	PrintEdges(id2, $cases.s);
+	PrintEdge($id, id2);
 }
 | While '(' expr ')' statement
 {
@@ -390,15 +390,15 @@ statement returns [int id]
 }
 | Ret ';'
 {
-	PrintNode("Ret");
+	$id = PrintNode("Ret");
 }
 | Brk ';'
 {
-	PrintNode("Brk");
+	$id = PrintNode("Brk");
 }
 | Cnt ';'
 {
-	PrintNode("Cnt");
+	$id = PrintNode("Cnt");
 }
 | block
 {
@@ -411,8 +411,8 @@ method_call returns [int id]
 : Ident '(' arguments ')'
 {
 	$id = PrintNode("Call");
-	PrintEdge($id, $Ident.text);
-	PrintEdges($id, $arguments.id);
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, $arguments.id);
 }
 | Callout '(' Str nextCalloutArgs ')'
 {
@@ -473,23 +473,23 @@ nextArgs returns [MySet s]
 ;
 
 cases returns [MySet s]
-: c=cases case
+: c=cases nextCase
 {
 	$s = $c.s;
-	$s.ExtendArray($case.id);
+	$s.ExtendArray($nextCase.id);
 }
-| case
+| nextCase
 {
-    $s = new Myset();
-    $s.ExtendArray($case.id);
+    $s = new MySet();
+    $s.ExtendArray($nextCase.id);
 }
 ;
 
-case returns [int id]
+nextCase returns [int id]
 : Case literal ':' statements
 {
 	$id = PrintNode("Case");
-	PrintEdge($id, $literal.text);
+	PrintEdge($id, PrintNode($literal.text));
 	if($statements.id != -1) {
 	    PrintEdge($id, $statements.id);
 	}
@@ -556,8 +556,8 @@ location returns [int id]
 }
 | Ident '[' expr ']'
 {
-    $id = PrintNode("LocExpr2");
-    PrintEdge($id, $Ident.id);
+    $id = PrintNode("ArrayLoc");
+    PrintEdge($id, PrintNode($Ident.text));
     PrintEdge($id, $expr.id);
 }
 ;
