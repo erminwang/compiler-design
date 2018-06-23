@@ -350,18 +350,90 @@ statement returns [int id]
 	$id = PrintNode("CallExpr");
 	PrintEdge($id, $method_call.id);
 }
-| If '(' expr ')' block '(' Else block ')'
+| If '(' expr ')' b1=block Else b2=block
 {
-	
+	$id = PrintNode("IfElse");
+	$id2 = PrintNode("If");
+	$id3 = PrintNode("Else");
+	PrintEdge($id2, $expr.id);
+	PrintEdge($id2, $b1.id);
+	PrintEdge($id3, $b2.id);
+	PrintEdge($id, $id2);
+	PrintEdge($id, $id3);
 }
 | If '(' expr ')' block
 {
-
+	$id = PrintNode("IfElse");
+	$id2 = PrintNode("If");
+	PrintEdge($id2, $expr.id);
+	PrintEdge($id2, $block.id);
+	PrintEdge($id, $id2);
+}
+| Switch expr '{' cases '}'
+{
+	$id = PrintNode("Switch");
+	PrintEdge($id, $expr.id);
+	PrintEdges($id, $cases.s);
+}
+| While '(' expr ')' statement
+{
+	$id = PrintNode("While");
+	PrintEdge($id, $expr.id);
+	PrintEdge($id, $statement.id);
+}
+| Ret expr ';'
+{
+	$id = PrintNode("Ret");
+	PrintEdge($id, $expr.id);
+}
+| Ret ';'
+{
+	PrintNode("Ret");
+}
+| Brk ';'
+{
+	PrintNode("Brk");
+}
+| Cnt ';'
+{
+	PrintNode("Cnt");
 }
 | block
 {
 	$id = $block.id;
-};
+}
+;
+
+/* <method_call> -> <method_name> ( (<expr> ( , <expr> ) * ) ? ) */
+method_call returns [int id]
+: Ident '(' arguments ')'
+{
+	$id = PrintNode("Call");
+	PrintEdge($id, $Ident.id);
+	PrintEdges($id, $arguments.s);
+}
+;
+
+arguments returns [MySet s]
+: a=arguments ',' expr
+
+
+cases returns [MySet s]
+: c=cases case
+{
+	$s = $c.s;
+	$s.ExtendArray($case.id);
+}
+;
+
+case returns [int id]
+: Case literal ':' statements
+{
+	$id = PrintNode("Case");
+	PrintEdge($id, $literal.text);
+	PrintEdge($id, $statements.id);
+}
+;
 
 /* <expr>
 -> <location>
