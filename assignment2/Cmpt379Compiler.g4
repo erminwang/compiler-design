@@ -111,6 +111,257 @@ import java.io.*;
 }
 
 // Session 2: Fill the Grammer definition
+/* <program>
+-> class Program { <field_decl> * <method_decl> * } */
+prog
+: Class Program '{' field_decls method_decls '}'
+{
+	int id = PrintNode("Program");
+
+	if ($field_decls.s.size > 0) {
+		int id2 = PrintNode("Field_decls");
+		PrintEdges(id2, $field_decls.s);
+		PrintEdge(id, id2);
+	}
+
+	if ($method_decls.s.size > 0) {
+		int id2 = PrintNode("Method_decls");
+		PrintEdges(id2, $method_decls.s);
+		PrintEdge(id, id2);
+	}
+
+	try {PrintGraph();} catch(IOException e) {}
+}
+;
+
+/* <field_decl>
+-> <type> (<id> | <id> [ int_literal ] ) ( , <id> | <id>[int_literal ] ) * ;
+| <type> <id> = <literal> ; */
+field_decls returns [MySet s]
+: f=field_decls field_decl ';'
+{
+	$s = $f.s;
+	$s.ExtendArray($field_decl.id);
+}
+| f=field_decls inited_field_decl ';'
+{
+	$s = $f.s;
+	$s.ExtendArray($inited_field_decl.id);
+}
+|
+{
+	$s = new MySet();
+}
+;
+
+field_decl returns [int id]
+: f=field_decl ',' Ident
+{
+	$id = $f.id;
+
+	PrintEdge($id, PrintNode($Ident.text));
+}
+| f=field_decl ',' Ident '[' intLit ']'
+{
+	$id = $f.id;
+
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, PrintNode($intLit.text));
+}
+| Type Ident
+{
+	$id = PrintNode("FieldDecl");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+}
+| Type Ident '[' intLit ']'
+{
+	$id = PrintNode("FieldDecl");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, PrintNode($intLit.text));
+}
+;
+
+inited_field_decl returns [int id]
+: Type Ident '=' literal
+{
+	$id = PrintNode("InitedFieldDecl");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, PrintNode($literal.text));
+}
+;
+
+/* <method_decl>
+-> ( <type> | void ) <id> (( (<type> <id>) ( , <type> <id>) * ) ? ) <block> */
+method_decls returns [MySet s]
+: m=method_decls method_decl
+{
+	$s = $m.s;
+	$s.ExtendArray($method_decl.id);
+}
+|
+{
+	$s = new MySet();
+}
+;
+
+method_decl returns [int id]
+: Type Ident '(' params ')' block
+{
+	$id = PrintNode("MethodDecl");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, $params.id);
+	PrintEdge($id, $block.id);
+}
+| Void Ident '(' params ')' block
+{
+	$id = PrintNode("MethodDecl");
+
+	PrintEdge($id, PrintNode("void"));
+	PrintEdge($id, PrintNode($Ident.text));
+	PrintEdge($id, $params.id);
+	PrintEdge($id, $block.id);
+
+}
+;
+
+/* method parameters */
+params returns [int id]
+: Type Ident nextParams
+{
+	$id = PrintNode("MethodArg");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+
+	PrintEdges($id, $nextParams.s);
+}
+|
+{
+	$id = -1;
+}
+;
+
+nextParams returns [MySet s]
+: n=nextParams ',' Type Ident
+{
+	$s = $n.s;
+
+	$s.ExtendArray(PrintNode($Type.text));
+	$s.ExtendArray(PrintNode($Ident.text));
+}
+|
+{
+	$s = new MySet();
+}
+;
+
+/* <block> -> { <var_decl> * <statement> * } */
+block returns [int id]
+: '{' var_decls statements '}'
+{
+	$id = -1;
+	if ($var_decls.s.size > 0) {
+		$id = PrintNode("Block");
+		int id2 = PrintNode("VarDecl");
+		PrintEdges(id2, $var_decls.s);
+		PrintEdge($id, id2);
+	}
+	if ($statements.id != -1) {
+		if ($id == -1) $id = PrintNode("Block");
+		PrintEdge($id, $statements.id);
+	}
+}
+;
+
+/* <var_decl> -> <type> <id> ( , <id>) * ; */
+var_decls returns [MySet s]
+: v=var_decls var_decl ';'
+{
+	$s = $v.s;
+	$s.ExtendArray($var_decl.id);
+}
+|
+{
+	$s = new MySet();
+}
+;
+
+var_decl returns [int id]
+: v=var_decl ',' Ident
+{
+	$id = $v.id;
+
+	PrintEdge($id, PrintNode($Ident.text));
+}
+| Type Ident
+{
+	$id = PrintNode("VarDecl");
+
+	PrintEdge($id, PrintNode($Type.text));
+	PrintEdge($id, PrintNode($Ident.text));
+}
+;
+
+statements returns [int id]
+: statement t=statements
+{
+	if ($t.id != -1) {
+		$id = PrintNode("Seq");
+		PrintEdge($id, $statement.id);
+		PrintEdge($id, $t.id);
+	} else {
+		$id = $statement.id;
+	}
+}
+|
+{
+	$id = -1;
+}
+;
+
+/* <statement>
+-> <location> <assign_op> <expr> ;
+| <method_call> ;
+| if ( <expr> ) <block> ( else <block> ) ?
+| switch <expr> {(case <literal> : <statement> * ) + }
+| while ( <expr> ) <statement>
+| return ( <expr> ) ? ;
+| break ;
+| continue ;
+| <block> */
+statement returns [int id]
+: location AssignOp expr ';'
+{
+	$id = PrintNode("Assign");
+	PrintEdge($id, $location.id);
+	PrintEdge($id, PrintNode($AssignOp.text));
+	PrintEdge($id, $expr.id);
+}
+| method_call ';'
+{
+	$id = PrintNode("CallExpr");
+	PrintEdge($id, $method_call.id);
+}
+| If '(' expr ')' block '(' Else block ')'
+{
+	
+}
+| If '(' expr ')' block
+{
+
+}
+| block
+{
+	$id = $block.id;
+};
 
 /* <expr>
 -> <location>
@@ -125,18 +376,18 @@ import java.io.*;
 /* <location>
 -> <id>
 | <id> [ <expr> ] */
-location returns [int id]
+/* location returns [int id]
 : Ident
 | Ident '[' expr ']'
 {
 	$id = PrintNode("Loc");
 	PrintEdge($id, PrintNode($Ident.text));
 }
-;
+; */
 
 // Session 3: Lexical definition
 
-/* intLit
+intLit
 : DecLit
 | HexLit
 ;
@@ -145,7 +396,7 @@ literal
 : Char
 | intLit
 | BoolLit
-;*/
+;
 
 binOp
 : ArithOp
@@ -236,6 +487,14 @@ Cnt
 
 Callout
 : 'callout'
+;
+
+Switch
+: 'switch'
+;
+
+Case
+: 'case'
 ;
 
 DecLit
