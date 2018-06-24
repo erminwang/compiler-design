@@ -110,6 +110,7 @@ import java.io.*;
 
 }
 
+
 // Session 2: Fill the Grammer definition
 /* <program>
 -> class Program { <field_decl> * <method_decl> * } */
@@ -143,14 +144,14 @@ field_decls returns [MySet s]
 	$s = $f.s;
 	$s.ExtendArray($field_decl.id);
 }
+|
+{
+	$s = new MySet();
+}
 | f=field_decls inited_field_decl ';'
 {
 	$s = $f.s;
 	$s.ExtendArray($inited_field_decl.id);
-}
-|
-{
-	$s = new MySet();
 }
 ;
 
@@ -185,6 +186,7 @@ field_decl returns [int id]
 }
 ;
 
+
 inited_field_decl returns [int id]
 : Type Ident '=' literal
 {
@@ -195,6 +197,7 @@ inited_field_decl returns [int id]
 	PrintEdge($id, PrintNode($literal.text));
 }
 ;
+
 
 /* <method_decl>
 -> ( <type> | void ) <id> (( (<type> <id>) ( , <type> <id>) * ) ? ) <block> */
@@ -327,22 +330,12 @@ statements returns [int id]
 }
 ;
 
-/* <statement>
--> <location> <assign_op> <expr> ;
-| <method_call> ;
-| if ( <expr> ) <block> ( else <block> ) ?
-| switch <expr> {(case <literal> : <statement> * ) + }
-| while ( <expr> ) <statement>
-| return ( <expr> ) ? ;
-| break ;
-| continue ;
-| <block> */
 statement returns [int id]
-: location AssignOp expr ';'
+: location eqOp expr ';'
 {
 	$id = PrintNode("Assign");
 	PrintEdge($id, $location.id);
-	PrintEdge($id, PrintNode($AssignOp.text));
+	PrintEdge($id, PrintNode($eqOp.text));
 	PrintEdge($id, $expr.id);
 }
 | method_call ';'
@@ -372,10 +365,8 @@ statement returns [int id]
 | Switch expr '{' cases '}'
 {
 	$id = PrintNode("Switch");
-	int id2 = PrintNode("CaseSeq");
 	PrintEdge($id, $expr.id);
-	PrintEdges(id2, $cases.s);
-	PrintEdge($id, id2);
+	PrintEdge($id, $cases.id);
 }
 | While '(' expr ')' statement
 {
@@ -472,20 +463,19 @@ nextArgs returns [MySet s]
 }
 ;
 
-cases returns [MySet s]
-: c=cases nextCase
+cases returns [int id]
+: singleCase c=cases
 {
-	$s = $c.s;
-	$s.ExtendArray($nextCase.id);
+	$id = PrintNode("CaseSeq");
+	PrintEdge($id, $singleCase.id);
 }
-| nextCase
+| singleCase
 {
-    $s = new MySet();
-    $s.ExtendArray($nextCase.id);
+	$id = $singleCase.id;
 }
 ;
 
-nextCase returns [int id]
+singleCase returns [int id]
 : Case literal ':' statements
 {
 	$id = PrintNode("Case");
@@ -522,7 +512,7 @@ expr returns [int id]
 }
 | e1=expr binOp e2=expr
 {
-	$id = PrintNode("Bin_expr");
+	$id = PrintNode("BinExpr");
 	PrintEdge($id, $e1.id);
 	PrintEdge($id, PrintNode($binOp.text));
 	PrintEdge($id, $e2.id);
@@ -551,34 +541,48 @@ expr returns [int id]
 location returns [int id]
 : Ident
 {
-    $id = PrintNode("Loc");
+  $id = PrintNode("Loc");
 	PrintEdge($id, PrintNode($Ident.text));
 }
 | Ident '[' expr ']'
 {
-    $id = PrintNode("ArrayLoc");
-    PrintEdge($id, PrintNode($Ident.text));
-    PrintEdge($id, $expr.id);
+  $id = PrintNode("ArrayLoc");
+  PrintEdge($id, PrintNode($Ident.text));
+  PrintEdge($id, $expr.id);
 }
 ;
 
 // Session 3: Lexical definition
 
 intLit
-: DecLit
-| HexLit
+: DecNum
+| HexNum
 ;
 
 literal
-: Char
-| intLit
+: intLit
+| Char
 | BoolLit
 ;
 
+eqOp
+: '='
+| AssignOp
+;
+
+mathOp
+: '-'
+| ArithOp
+;
+
+boolOp
+: '!'
+| CondOp
+;
+
 binOp
-: ArithOp
-| Relop
-| EqOp
+: mathOp
+| RelOp
 | CondOp
 ;
 
@@ -623,7 +627,7 @@ Char
 ;
 
 Str
-:'"' ((~('\\' | '"')) | ('\\'.))* '"'
+: '"' ((~('\\' | '"')) | ('\\'.))* '"'
 ;
 
 Class
@@ -636,6 +640,18 @@ Program
 
 Void
 : 'void'
+;
+
+While
+: 'while'
+;
+
+Switch
+: 'switch'
+;
+
+Case
+: 'case'
 ;
 
 If
@@ -666,19 +682,12 @@ Callout
 : 'callout'
 ;
 
-Switch
-: 'switch'
-;
-
-Case
-: 'case'
-;
-
-DecLit
+DecNum
 : Digit+
 ;
 
-HexLit
+
+HexNum
 : '0x'HexDigit+
 ;
 
@@ -692,36 +701,26 @@ Type
 | 'boolean'
 ;
 
-
 Ident
 : Alpha AlphaNum*
 ;
 
-While
-: 'while'
-;
-
-EqOp
-: '=='
-| '!='
-;
-
-Relop
+RelOp
 : '<='
 | '>='
 | '<'
 | '>'
+| '=='
+| '!='
 ;
 
 AssignOp
-: '='
-| '+='
+: '+='
 | '-='
 ;
 
 ArithOp
 : '+'
-| '-'
 | '*'
 | '/'
 | '%'
@@ -730,36 +729,4 @@ ArithOp
 CondOp
 : '&&'
 | '||'
-;
-
-OParen
-: '('
-;
-
-CParen
-: ')'
-;
-
-OBrace
-: '{'
-;
-
-CBrace
-: '}'
-;
-
-OBracket
-: '['
-;
-
-CBracket
-: ']'
-;
-
-SemiColon
-: ';'
-;
-
-Comma
-: ','
 ;

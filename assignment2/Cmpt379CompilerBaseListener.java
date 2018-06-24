@@ -247,13 +247,13 @@ public class Cmpt379CompilerBaseListener implements Cmpt379CompilerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNextCase(Cmpt379CompilerParser.NextCaseContext ctx) { }
+	@Override public void enterSingleCase(Cmpt379CompilerParser.SingleCaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNextCase(Cmpt379CompilerParser.NextCaseContext ctx) { }
+	@Override public void exitSingleCase(Cmpt379CompilerParser.SingleCaseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -302,6 +302,42 @@ public class Cmpt379CompilerBaseListener implements Cmpt379CompilerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitLiteral(Cmpt379CompilerParser.LiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEqOp(Cmpt379CompilerParser.EqOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEqOp(Cmpt379CompilerParser.EqOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMathOp(Cmpt379CompilerParser.MathOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMathOp(Cmpt379CompilerParser.MathOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolOp(Cmpt379CompilerParser.BoolOpContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolOp(Cmpt379CompilerParser.BoolOpContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

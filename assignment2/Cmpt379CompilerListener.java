@@ -201,15 +201,15 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 */
 	void exitCases(Cmpt379CompilerParser.CasesContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#nextCase}.
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#singleCase}.
 	 * @param ctx the parse tree
 	 */
-	void enterNextCase(Cmpt379CompilerParser.NextCaseContext ctx);
+	void enterSingleCase(Cmpt379CompilerParser.SingleCaseContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#nextCase}.
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#singleCase}.
 	 * @param ctx the parse tree
 	 */
-	void exitNextCase(Cmpt379CompilerParser.NextCaseContext ctx);
+	void exitSingleCase(Cmpt379CompilerParser.SingleCaseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#expr}.
 	 * @param ctx the parse tree
@@ -250,6 +250,36 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitLiteral(Cmpt379CompilerParser.LiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#eqOp}.
+	 * @param ctx the parse tree
+	 */
+	void enterEqOp(Cmpt379CompilerParser.EqOpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#eqOp}.
+	 * @param ctx the parse tree
+	 */
+	void exitEqOp(Cmpt379CompilerParser.EqOpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#mathOp}.
+	 * @param ctx the parse tree
+	 */
+	void enterMathOp(Cmpt379CompilerParser.MathOpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#mathOp}.
+	 * @param ctx the parse tree
+	 */
+	void exitMathOp(Cmpt379CompilerParser.MathOpContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#boolOp}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolOp(Cmpt379CompilerParser.BoolOpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#boolOp}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolOp(Cmpt379CompilerParser.BoolOpContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#binOp}.
 	 * @param ctx the parse tree
