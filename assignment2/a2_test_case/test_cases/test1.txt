@@ -1,0 +1,13 @@
+class Program {
+
+int x,y,z;
+
+void init ( )
+{
+	callout("print", x + y, a);
+  x = printf("aac");
+
+}
+
+
+}

@@ -1299,7 +1299,7 @@ public class Cmpt379CompilerParser extends Parser {
 		public BlockContext b2;
 		public BlockContext block;
 		public CasesContext cases;
-		public StatementContext statement;
+		public StatementContext s;
 		public LocationContext location() {
 			return getRuleContext(LocationContext.class,0);
 		}
@@ -1467,11 +1467,11 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(245);
 				match(T__8);
 				setState(246);
-				((StatementContext)_localctx).statement = statement();
+				((StatementContext)_localctx).s = statement();
 
 					((StatementContext)_localctx).id =  PrintNode("While");
 					PrintEdge(_localctx.id, ((StatementContext)_localctx).expr.id);
-					PrintEdge(_localctx.id, _localctx.id);
+					PrintEdge(_localctx.id, ((StatementContext)_localctx).s.id);
 
 				}
 				break;
@@ -1553,6 +1553,7 @@ public class Cmpt379CompilerParser extends Parser {
 		public int id;
 		public Token Ident;
 		public ArgumentsContext arguments;
+		public Token Str;
 		public NextCalloutArgsContext nextCalloutArgs;
 		public TerminalNode Ident() { return getToken(Cmpt379CompilerParser.Ident, 0); }
 		public ArgumentsContext arguments() {
@@ -1609,15 +1610,18 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(275);
 				match(T__7);
 				setState(276);
-				match(Str);
+				((Method_callContext)_localctx).Str = match(Str);
 				setState(277);
 				((Method_callContext)_localctx).nextCalloutArgs = nextCalloutArgs(0);
 				setState(278);
 				match(T__8);
 
 				    ((Method_callContext)_localctx).id =  PrintNode("Callout");
-				    PrintEdge(_localctx.id, PrintNode("StringArg"));
+						int id2 = PrintNode("StringArg");
+						PrintEdge(id2, PrintNode(ProcessString((((Method_callContext)_localctx).Str!=null?((Method_callContext)_localctx).Str.getText():null))));
+						PrintEdge(_localctx.id, id2);
 				    PrintEdges(_localctx.id, ((Method_callContext)_localctx).nextCalloutArgs.s);
+
 
 				}
 				break;
@@ -1727,6 +1731,7 @@ public class Cmpt379CompilerParser extends Parser {
 	public static class CalloutArgContext extends ParserRuleContext {
 		public int id;
 		public ExprContext expr;
+		public Token Str;
 		public ExprContext expr() {
 			return getRuleContext(ExprContext.class,0);
 		}
@@ -1774,10 +1779,12 @@ public class Cmpt379CompilerParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(299);
-				match(Str);
+				((CalloutArgContext)_localctx).Str = match(Str);
 
 				    ((CalloutArgContext)_localctx).id =  PrintNode("CalloutString");
-				    PrintEdge(_localctx.id, PrintNode("StringArg"));
+						int id2 = PrintNode("StringArg");
+				    PrintEdge(id2, PrintNode(ProcessString((((CalloutArgContext)_localctx).Str!=null?((CalloutArgContext)_localctx).Str.getText():null))));
+						PrintEdge(_localctx.id, id2);
 
 				}
 				break;
@@ -2000,6 +2007,7 @@ public class Cmpt379CompilerParser extends Parser {
 
 					((CasesContext)_localctx).id =  PrintNode("CaseSeq");
 					PrintEdge(_localctx.id, ((CasesContext)_localctx).singleCase.id);
+					PrintEdge(_localctx.id, ((CasesContext)_localctx).c.id);
 
 				}
 				break;
@@ -2091,7 +2099,7 @@ public class Cmpt379CompilerParser extends Parser {
 		public LocationContext location;
 		public Method_callContext method_call;
 		public LiteralContext literal;
-		public ExprContext expr;
+		public ExprContext e;
 		public BinOpContext binOp;
 		public ExprContext e2;
 		public LocationContext location() {
@@ -2179,10 +2187,10 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(348);
 				match(T__10);
 				setState(349);
-				((ExprContext)_localctx).expr = expr(3);
+				((ExprContext)_localctx).e = expr(3);
 
 				    ((ExprContext)_localctx).id =  PrintNode("NegExpr");
-				    PrintEdge(_localctx.id, _localctx.id);
+				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
 
 				}
 				break;
@@ -2191,10 +2199,10 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(352);
 				match(T__11);
 				setState(353);
-				((ExprContext)_localctx).expr = expr(2);
+				((ExprContext)_localctx).e = expr(2);
 
 				    ((ExprContext)_localctx).id =  PrintNode("NotExpr");
-				    PrintEdge(_localctx.id, _localctx.id);
+				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
 
 				}
 				break;
@@ -2203,12 +2211,12 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(356);
 				match(T__7);
 				setState(357);
-				((ExprContext)_localctx).expr = expr(0);
+				((ExprContext)_localctx).e = expr(0);
 				setState(358);
 				match(T__8);
 
-				    ((ExprContext)_localctx).id =  PrintNode("ExprArg");
-				    PrintEdge(_localctx.id, _localctx.id);
+				    ((ExprContext)_localctx).id =  PrintNode("ParenArg");
+				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
 
 				}
 				break;
@@ -2232,7 +2240,7 @@ public class Cmpt379CompilerParser extends Parser {
 					setState(364);
 					((ExprContext)_localctx).binOp = binOp();
 					setState(365);
-					((ExprContext)_localctx).e2 = ((ExprContext)_localctx).expr = expr(5);
+					((ExprContext)_localctx).e2 = expr(5);
 
 					          	((ExprContext)_localctx).id =  PrintNode("BinExpr");
 					          	PrintEdge(_localctx.id, ((ExprContext)_localctx).e1.id);

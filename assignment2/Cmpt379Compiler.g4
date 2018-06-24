@@ -368,11 +368,11 @@ statement returns [int id]
 	PrintEdge($id, $expr.id);
 	PrintEdge($id, $cases.id);
 }
-| While '(' expr ')' statement
+| While '(' expr ')' s=statement
 {
 	$id = PrintNode("While");
 	PrintEdge($id, $expr.id);
-	PrintEdge($id, $statement.id);
+	PrintEdge($id, $s.id);
 }
 | Ret expr ';'
 {
@@ -408,8 +408,11 @@ method_call returns [int id]
 | Callout '(' Str nextCalloutArgs ')'
 {
     $id = PrintNode("Callout");
-    PrintEdge($id, PrintNode("StringArg"));
+		int id2 = PrintNode("StringArg");
+		PrintEdge(id2, PrintNode(ProcessString($Str.text)));
+		PrintEdge($id, id2);
     PrintEdges($id, $nextCalloutArgs.s);
+
 }
 ;
 
@@ -434,7 +437,9 @@ calloutArg returns [int id]
 | Str
 {
     $id = PrintNode("CalloutString");
-    PrintEdge($id, PrintNode("StringArg"));
+		int id2 = PrintNode("StringArg");
+    PrintEdge(id2, PrintNode(ProcessString($Str.text)));
+		PrintEdge($id, id2);
 }
 ;
 
@@ -468,6 +473,7 @@ cases returns [int id]
 {
 	$id = PrintNode("CaseSeq");
 	PrintEdge($id, $singleCase.id);
+	PrintEdge($id, $c.id);
 }
 | singleCase
 {
@@ -486,14 +492,6 @@ singleCase returns [int id]
 }
 ;
 
-/* <expr>
--> <location>
-| <method_call>
-| <literal>
-| <expr> <bin_op> <expr>
-| - <expr>
-| ! <expr>
-| ( <expr> ) */
 expr returns [int id]
 : location
 {
@@ -517,20 +515,20 @@ expr returns [int id]
 	PrintEdge($id, PrintNode($binOp.text));
 	PrintEdge($id, $e2.id);
 }
-| '-' expr
+| '-' e=expr
 {
     $id = PrintNode("NegExpr");
-    PrintEdge($id, $expr.id);
+    PrintEdge($id, $e.id);
 }
-| '!' expr
+| '!' e=expr
 {
     $id = PrintNode("NotExpr");
-    PrintEdge($id, $expr.id);
+    PrintEdge($id, $e.id);
 }
-| '(' expr ')'
+| '(' e = expr ')'
 {
-    $id = PrintNode("ExprArg");
-    PrintEdge($id, $expr.id);
+    $id = PrintNode("ParenArg");
+    PrintEdge($id, $e.id);
 }
 ;
 
