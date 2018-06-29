@@ -1780,7 +1780,7 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(299);
 				((CalloutArgContext)_localctx).Str = match(Str);
 
-				    ((CalloutArgContext)_localctx).id =  PrintNode("CalloutString");
+				    ((CalloutArgContext)_localctx).id =  PrintNode("CalloutArg");
 						int id2 = PrintNode("StringArg");
 				    PrintEdge(id2, PrintNode(ProcessString((((CalloutArgContext)_localctx).Str!=null?((CalloutArgContext)_localctx).Str.getText():null))));
 						PrintEdge(_localctx.id, id2);

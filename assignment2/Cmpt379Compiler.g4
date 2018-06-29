@@ -434,7 +434,7 @@ calloutArg returns [int id]
 }
 | Str
 {
-    $id = PrintNode("CalloutString");
+    $id = PrintNode("CalloutArg");
 		int id2 = PrintNode("StringArg");
     PrintEdge(id2, PrintNode(ProcessString($Str.text)));
 		PrintEdge($id, id2);

@@ -1,13 +1,18 @@
 class Program {
+	int foo2 (int a) {
+		switch a {
+			case 1:
+				b = 3;
+				exp(b+a);
+				callout("printf", a + b);
 
-int x,y,z;
+			case 2:
+				b = 4*3;
+				a = 5+4;
 
-void init ( )
-{
-	callout("print", x + y, a);
-  x = printf("aac");
-
-}
-
-
+			case 3:
+				c = q;
+				return;		
+		}
+	}
 }

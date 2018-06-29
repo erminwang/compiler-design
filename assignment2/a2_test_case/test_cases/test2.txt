@@ -1,0 +1,37 @@
+class Program {
+
+
+    int foo(boolean x) {}
+    boolean foo(int x, int y, boolean z) {}
+    int foo(int x) {
+            a = x;
+        if ((x == b)) {
+            x = true;
+        }
+        
+        if (!x){
+            if (-x){}
+            x = true;
+        } else {
+            y = false;
+        }
+
+        while (a == false) a = y;
+        while (z == dos(x , y)) return;
+        while (a == true) return foo(a);
+        break;
+        continue;
+        callout ("fdsfdsf", "fdsfdsf", "fdsfsd", a+b);
+    }
+    int foo2(int y) {
+        switch a+b {
+            case 5:
+                b = 3;
+                exp(b+a);
+                callout("printf", a + b);
+            case 6:
+                b = 4+3;
+                a = 5+4*2;
+        }
+    }    
+}
