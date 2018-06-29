@@ -1379,8 +1379,7 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(216);
 				match(T__2);
 
-					((StatementContext)_localctx).id =  PrintNode("CallExpr");
-					PrintEdge(_localctx.id, ((StatementContext)_localctx).method_call.id);
+					((StatementContext)_localctx).id =  ((StatementContext)_localctx).method_call.id;
 
 				}
 				break;
@@ -1427,11 +1426,9 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(232);
 				((StatementContext)_localctx).block = block();
 
-					((StatementContext)_localctx).id =  PrintNode("IfElse");
-					int id2 = PrintNode("If");
-					PrintEdge(id2, ((StatementContext)_localctx).expr.id);
-					PrintEdge(id2, ((StatementContext)_localctx).block.id);
-					PrintEdge(_localctx.id, id2);
+					((StatementContext)_localctx).id =  PrintNode("If");
+					PrintEdge(_localctx.id, ((StatementContext)_localctx).expr.id);
+					PrintEdge(_localctx.id, ((StatementContext)_localctx).block.id);
 
 				}
 				break;
@@ -1553,6 +1550,7 @@ public class Cmpt379CompilerParser extends Parser {
 		public int id;
 		public Token Ident;
 		public ArgumentsContext arguments;
+		public Token Callout;
 		public Token Str;
 		public NextCalloutArgsContext nextCalloutArgs;
 		public TerminalNode Ident() { return getToken(Cmpt379CompilerParser.Ident, 0); }
@@ -1596,7 +1594,7 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(271);
 				match(T__8);
 
-					((Method_callContext)_localctx).id =  PrintNode("Call");
+					((Method_callContext)_localctx).id =  PrintNode("UserMeth");
 					PrintEdge(_localctx.id, PrintNode((((Method_callContext)_localctx).Ident!=null?((Method_callContext)_localctx).Ident.getText():null)));
 					PrintEdge(_localctx.id, ((Method_callContext)_localctx).arguments.id);
 
@@ -1606,7 +1604,7 @@ public class Cmpt379CompilerParser extends Parser {
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(274);
-				match(Callout);
+				((Method_callContext)_localctx).Callout = match(Callout);
 				setState(275);
 				match(T__7);
 				setState(276);
@@ -1616,9 +1614,10 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(278);
 				match(T__8);
 
-				    ((Method_callContext)_localctx).id =  PrintNode("Callout");
+				    ((Method_callContext)_localctx).id =  PrintNode("ExtMeth");
 						int id2 = PrintNode("StringArg");
 						PrintEdge(id2, PrintNode(ProcessString((((Method_callContext)_localctx).Str!=null?((Method_callContext)_localctx).Str.getText():null))));
+						PrintEdge(_localctx.id, PrintNode((((Method_callContext)_localctx).Callout!=null?((Method_callContext)_localctx).Callout.getText():null)));
 						PrintEdge(_localctx.id, id2);
 				    PrintEdges(_localctx.id, ((Method_callContext)_localctx).nextCalloutArgs.s);
 
@@ -2189,8 +2188,8 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(349);
 				((ExprContext)_localctx).e = expr(3);
 
-				    ((ExprContext)_localctx).id =  PrintNode("NegExpr");
-				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
+				  ((ExprContext)_localctx).id =  PrintNode("NegExpr");
+				  PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
 
 				}
 				break;
@@ -2201,8 +2200,8 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(353);
 				((ExprContext)_localctx).e = expr(2);
 
-				    ((ExprContext)_localctx).id =  PrintNode("NotExpr");
-				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
+				  ((ExprContext)_localctx).id =  PrintNode("NotExpr");
+				  PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
 
 				}
 				break;
@@ -2215,8 +2214,7 @@ public class Cmpt379CompilerParser extends Parser {
 				setState(358);
 				match(T__8);
 
-				    ((ExprContext)_localctx).id =  PrintNode("ParenArg");
-				    PrintEdge(_localctx.id, ((ExprContext)_localctx).e.id);
+				  ((ExprContext)_localctx).id =  ((ExprContext)_localctx).e.id;
 
 				}
 				break;

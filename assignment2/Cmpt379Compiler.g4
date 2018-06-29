@@ -340,8 +340,7 @@ statement returns [int id]
 }
 | method_call ';'
 {
-	$id = PrintNode("CallExpr");
-	PrintEdge($id, $method_call.id);
+	$id = $method_call.id;
 }
 | If '(' expr ')' b1=block Else b2=block
 {
@@ -356,11 +355,9 @@ statement returns [int id]
 }
 | If '(' expr ')' block
 {
-	$id = PrintNode("IfElse");
-	int id2 = PrintNode("If");
-	PrintEdge(id2, $expr.id);
-	PrintEdge(id2, $block.id);
-	PrintEdge($id, id2);
+	$id = PrintNode("If");
+	PrintEdge($id, $expr.id);
+	PrintEdge($id, $block.id);
 }
 | Switch expr '{' cases '}'
 {
@@ -401,15 +398,16 @@ statement returns [int id]
 method_call returns [int id]
 : Ident '(' arguments ')'
 {
-	$id = PrintNode("Call");
+	$id = PrintNode("UserMeth");
 	PrintEdge($id, PrintNode($Ident.text));
 	PrintEdge($id, $arguments.id);
 }
 | Callout '(' Str nextCalloutArgs ')'
 {
-    $id = PrintNode("Callout");
+    $id = PrintNode("ExtMeth");
 		int id2 = PrintNode("StringArg");
 		PrintEdge(id2, PrintNode(ProcessString($Str.text)));
+		PrintEdge($id, PrintNode($Callout.text));
 		PrintEdge($id, id2);
     PrintEdges($id, $nextCalloutArgs.s);
 
@@ -517,18 +515,17 @@ expr returns [int id]
 }
 | '-' e=expr
 {
-    $id = PrintNode("NegExpr");
-    PrintEdge($id, $e.id);
+  $id = PrintNode("NegExpr");
+  PrintEdge($id, $e.id);
 }
 | '!' e=expr
 {
-    $id = PrintNode("NotExpr");
-    PrintEdge($id, $e.id);
+  $id = PrintNode("NotExpr");
+  PrintEdge($id, $e.id);
 }
 | '(' e = expr ')'
 {
-    $id = PrintNode("ParenArg");
-    PrintEdge($id, $e.id);
+  $id = $e.id;
 }
 ;
 
