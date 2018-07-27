@@ -1,0 +1,11 @@
+class Program {
+
+int a[10];
+int b;
+
+void init ( )
+{
+	b = a[1];
+	a[1]=2;
+}
+}

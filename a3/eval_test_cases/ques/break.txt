@@ -1,0 +1,23 @@
+class Program {
+
+int a , b, c, x;
+
+void main ( )
+{
+	c=0;
+	a=1;
+	b=10;
+	x = a;
+        while (x < b)
+	{
+		c = c + x;
+		if (c == 3)
+		{
+			break;
+		}
+		x = x + 1;
+	}
+	
+
+}
+}
