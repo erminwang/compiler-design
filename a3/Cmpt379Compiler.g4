@@ -159,7 +159,7 @@ public class Quad {
 							+ " " + "goto" + " " + "L_" + src2);
 		}else if (dst == -3) {
 			System.out.println("L_" + label + ": " + "ifFalse" + " " + s.GetName(src1)
-							+ " " + "goto" + " " + "L_" + src2);
+			+ " " + "goto" + " " + "L_" + src2);
 		}else if (src1 == -5) { //print t_6 = fun call 0
 			System.out.println("L_" + label + ": " + s.GetName(dst) + " = "
 			   + op + " call " + src2);
@@ -169,10 +169,12 @@ public class Quad {
 			System.out.println("L_" + label + ": " + s.GetName(src1) + " param");
 		}else if (dst == -8) {//-8 means string param when printing--"a = %d\n" param
 			System.out.println("L_" + label + ": " + op + " param");
-		}else if (dst == -1 && src1 == -1) {    // goto L_7
-			System.out.println("L_" + label + ": " + "goto " + "L_" + src2);
+		}else if (src1 == -9 && op.equals("function")) { //print fucntion name
+			System.out.println(s.GetName(src2) + ":");
+		}else if (src1 == -1 && src2 == -1 && !op.equals("ret")) { // goto L_  instruction
+			System.out.println("L_" + label + ": " + " goto " + "L_" + dst);
 		}else if (src2 == -4 && dst == -1) {
-			System.out.println("L_" + label + ":   = " + s.GetName(src1) + " ret");
+			System.out.println("L_" + label + ":  = " + s.GetName(src1) + " ret");
 		}else if (src2 == -1) { //it's Assignment op a = b
 			System.out.println("L_" + label + ": " + s.GetName(dst) + " = "
 					+ s.GetName(src1));
@@ -272,6 +274,36 @@ public class InstructionSet {
 	}
 }
 
+public class LoopList{
+	int[] breakList;
+	int[] continueList;
+	int sizeb;
+	int sizec;
+
+	LoopList(int arraySize) {
+		breakList = new int[arraySize];
+		continueList = new int[arraySize];
+		sizeb = 0;
+		sizec = 0;
+		for(int i = 0; i < breakList.length; i++) {
+			breakList[i] = -1;
+			continueList[i] = -1;
+		}
+	}
+
+	void AddToBreakList(int id) {
+		breakList[sizeb] = id;
+		sizeb++;
+	}
+
+	void AddToContinueList(int id) {
+		continueList[sizec] = id;
+		sizec++;
+	}
+}
+
+LoopList l = new LoopList(10);
+
 }
 
 
@@ -280,7 +312,7 @@ public class InstructionSet {
 //---------------------------------------------------------------------------
 
 prog
-: Class Program '{' field_decls method_decl '}'
+: Class Program '{' field_decls method_decls '}'
 {
 	s.Print();
 	System.out.println("------------------------------------");
@@ -290,12 +322,27 @@ prog
 
 field_decls
 : f=field_decls field_decl ';'
+{
+
+}
+| f=field_decls inited_field_decl ';'
+{
+
+}
 |
+{
+
+}
 ;
 
 
 field_decl returns [DataType t]
 : f=field_decl ',' Ident
+{
+	$t = $f.t;
+	s.insert($Ident.text, $t);
+}
+| f=field_decl ',' Ident '[' intLit ']'
 {
 	$t = $f.t;
 	s.insert($Ident.text, $t);
@@ -312,19 +359,74 @@ field_decl returns [DataType t]
 }
 ;
 
+inited_field_decl returns [DataType t]
+: Type Ident '=' literal
+{
+	$t = DataType.valueOf($Type.text.toUpperCase());
+	int id = s.insert($Ident.text, $t);
+	q.Add(id, $literal.id, -1, "=");
+}
+;
+
+method_decls
+: method_decls method_decl
+{
+
+}
+|
+{
+
+}
+;
+
 method_decl
-: Type Ident '('  ')' block
+: Type Ident functionLabel '(' params ')' block
+{
+	int id = s.insert($Ident.text, DataType.valueOf($Type.text.toUpperCase()));
+	q.PatchSrc2($functionLabel.id, id);
+}
+| Void Ident functionLabel '(' params ')' block
+{
+	int id = s.insert($Ident.text, DataType.valueOf($Void.text.toUpperCase()));
+	q.PatchSrc2($functionLabel.id, id);
+}
+;
+
+functionLabel returns [int id]
+:
+{
+	$id = q.Add(-1, -9, -1, "function");
+	System.out.println("+++++ functionLabel id : " + $id);
+}
+;
+
+params
+: Type Ident nextParams
 {
 	s.insert($Ident.text, DataType.valueOf($Type.text.toUpperCase()));
 }
-| Void Ident '('  ')' block
+|
 {
-	s.insert($Ident.text, DataType.valueOf($Void.text.toUpperCase()));
+
+}
+;
+
+nextParams
+: nextParams ',' Type Ident
+{
+	s.insert($Ident.text, DataType.valueOf($Type.text.toUpperCase()));
+}
+|
+{
+
 }
 ;
 
 block
 : '{' var_decls statements '}'
+{
+
+}
 ;
 
 var_decls
@@ -346,7 +448,6 @@ var_decl returns [DataType t]
 
 }
 ;
-
 
 
 statements
@@ -373,7 +474,6 @@ statement
 		System.out.println("$m.id is : " + $m.id); */
 	}
 
-	//-3 means iffalse goto qaud entry
 	if($bool_expr.is.falselist[0] != -1) {
 		int falseId = (($bool_expr.is).falselist)[0];
 		q.PatchSrc2(falseId, q.size);
@@ -396,15 +496,56 @@ statement
 		}
 	}
 
-	//Patch goto L_7 after c = t_1
-
 	int nid = $n.id;
 	System.out.println("nid : " + nid);
 	q.PatchSrc2(nid, q.size);
 }
 | While m1=m '(' bool_expr ')' m2=m block
 {
+	System.out.println("$m1.id is : " + $m1.id);
+	if($bool_expr.is.truelist[0] != -1) {
+		int trueId = (($bool_expr.is).truelist)[0];
+		q.PatchSrc2(trueId, $m2.id);
+		/* System.out.println("trueId is : " + trueId);
+		System.out.println("$m.id is : " + $m.id); */
+	}
 
+	if($bool_expr.is.falselist[0] != -1) {
+		int falseId = (($bool_expr.is).falselist)[0];
+		q.PatchSrc2(falseId, q.size + 1);
+		/* System.out.println("q.size is : " + q.size); */
+		/* System.out.println("falseId is : " + falseId); */
+	}
+	for(int i = 0; i < l.sizeb; i++) {
+		q.PatchSrc2(l.breakList[i], q.size + 1);
+	}
+	for(int i = 0; i < l.sizec; i++) {
+		q.PatchSrc2(l.continueList[i], q.size + 1);
+	}
+	q.Add(-1, -1, $m1.id, "goto");
+}
+| Ret ';'
+{
+	q.Add(-1, -1, -4, "ret");
+}
+| Ret '(' expr ')' ';'
+{
+	int id = $expr.id;
+	q.Add(-1, id, -4, "ret");
+}
+| Brk ';'
+{
+	// add goto L_15 to QuadTab
+	int breakId = q.Add(-1, -1, -1, "break");
+	l.AddToBreakList(breakId);
+
+}
+| Cnt ';'
+{
+	// add goto L_ to QuadTab
+	int continueId = q.Add(-1, -1, -1, "continue");
+	System.out.println("*************continueId : " + continueId);
+	l.AddToContinueList(continueId);
 }
 ;
 
@@ -452,7 +593,7 @@ bool_expr returns [InstructionSet is]
 	// TODO: change to use "AddToBothList"
 	instructionSet.AddToTrueList(q.size);
 
-	q.PrintQT();
+	//q.PrintQT();
 	System.out.println("-----: " + q.size);
 	//-2 refers to
 	//int dest1 = q.size + 2;
@@ -589,12 +730,66 @@ expr returns [int id]
 	$id = s.Add(s.GetType($e1.id));
 	q.Add($id, $e1.id, -1, "!");
 }
-/* | methodCall
+| methodCall
 {
 	$id = $methodCall.id;
-} */
+}
 ;
 
+methodCall returns [int id]
+: Ident '(' arguments ')'
+{
+	int id2 = s.Add(DataType.INT);   //make a t_
+	$id = q.Add(id2, -5, $arguments.count, $Ident.text);
+}
+| Callout '(' Str nextCalloutArgs ')'
+{
+	q.Add(-6, -1, $nextCalloutArgs.count, $Str.text);
+}
+;
+
+arguments returns [int count]
+: expr nextArgs
+{
+	$count = $nextArgs.count + 1;
+	int id = $expr.id;
+	q.Add(-7, id, -1, "param");
+}
+|
+{
+	$count = 0;
+}
+;
+
+nextArgs returns [int count]
+: nexta=nextArgs ',' expr
+{
+	$count = $nexta.count + 1;
+	int id = $expr.id;
+	q.Add(-7, id, -1, "param");
+}
+|
+{
+  $count = 0;
+}
+;
+
+nextCalloutArgs returns [int count]
+: nextc=nextCalloutArgs ',' expr
+{
+	q.Add(-7, $expr.id, -1, "param");
+	$count = $nextc.count + 1;
+}
+| nextc=nextCalloutArgs ',' Str
+{
+	q.Add(-8, -1, -1, $Str.text);
+	$count = $nextc.count + 1;
+}
+|
+{
+	$count = 0;
+}
+;
 
 location returns [int id]
 :Ident

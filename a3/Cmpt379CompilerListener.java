@@ -41,6 +41,26 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 */
 	void exitField_decl(Cmpt379CompilerParser.Field_declContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#inited_field_decl}.
+	 * @param ctx the parse tree
+	 */
+	void enterInited_field_decl(Cmpt379CompilerParser.Inited_field_declContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#inited_field_decl}.
+	 * @param ctx the parse tree
+	 */
+	void exitInited_field_decl(Cmpt379CompilerParser.Inited_field_declContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#method_decls}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethod_decls(Cmpt379CompilerParser.Method_declsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#method_decls}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethod_decls(Cmpt379CompilerParser.Method_declsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#method_decl}.
 	 * @param ctx the parse tree
 	 */
@@ -50,6 +70,36 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMethod_decl(Cmpt379CompilerParser.Method_declContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#functionLabel}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunctionLabel(Cmpt379CompilerParser.FunctionLabelContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#functionLabel}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunctionLabel(Cmpt379CompilerParser.FunctionLabelContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams(Cmpt379CompilerParser.ParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams(Cmpt379CompilerParser.ParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#nextParams}.
+	 * @param ctx the parse tree
+	 */
+	void enterNextParams(Cmpt379CompilerParser.NextParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#nextParams}.
+	 * @param ctx the parse tree
+	 */
+	void exitNextParams(Cmpt379CompilerParser.NextParamsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#block}.
 	 * @param ctx the parse tree
@@ -140,6 +190,46 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpr(Cmpt379CompilerParser.ExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#methodCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodCall(Cmpt379CompilerParser.MethodCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#methodCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodCall(Cmpt379CompilerParser.MethodCallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void enterArguments(Cmpt379CompilerParser.ArgumentsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#arguments}.
+	 * @param ctx the parse tree
+	 */
+	void exitArguments(Cmpt379CompilerParser.ArgumentsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#nextArgs}.
+	 * @param ctx the parse tree
+	 */
+	void enterNextArgs(Cmpt379CompilerParser.NextArgsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#nextArgs}.
+	 * @param ctx the parse tree
+	 */
+	void exitNextArgs(Cmpt379CompilerParser.NextArgsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#nextCalloutArgs}.
+	 * @param ctx the parse tree
+	 */
+	void enterNextCalloutArgs(Cmpt379CompilerParser.NextCalloutArgsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#nextCalloutArgs}.
+	 * @param ctx the parse tree
+	 */
+	void exitNextCalloutArgs(Cmpt379CompilerParser.NextCalloutArgsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#location}.
 	 * @param ctx the parse tree

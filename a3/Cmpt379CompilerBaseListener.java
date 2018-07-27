@@ -55,6 +55,30 @@ public class Cmpt379CompilerBaseListener implements Cmpt379CompilerListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterInited_field_decl(Cmpt379CompilerParser.Inited_field_declContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInited_field_decl(Cmpt379CompilerParser.Inited_field_declContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMethod_decls(Cmpt379CompilerParser.Method_declsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethod_decls(Cmpt379CompilerParser.Method_declsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterMethod_decl(Cmpt379CompilerParser.Method_declContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -62,6 +86,42 @@ public class Cmpt379CompilerBaseListener implements Cmpt379CompilerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMethod_decl(Cmpt379CompilerParser.Method_declContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFunctionLabel(Cmpt379CompilerParser.FunctionLabelContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFunctionLabel(Cmpt379CompilerParser.FunctionLabelContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParams(Cmpt379CompilerParser.ParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParams(Cmpt379CompilerParser.ParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNextParams(Cmpt379CompilerParser.NextParamsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNextParams(Cmpt379CompilerParser.NextParamsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -170,6 +230,54 @@ public class Cmpt379CompilerBaseListener implements Cmpt379CompilerListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpr(Cmpt379CompilerParser.ExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMethodCall(Cmpt379CompilerParser.MethodCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMethodCall(Cmpt379CompilerParser.MethodCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterArguments(Cmpt379CompilerParser.ArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitArguments(Cmpt379CompilerParser.ArgumentsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNextArgs(Cmpt379CompilerParser.NextArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNextArgs(Cmpt379CompilerParser.NextArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNextCalloutArgs(Cmpt379CompilerParser.NextCalloutArgsContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNextCalloutArgs(Cmpt379CompilerParser.NextCalloutArgsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
