@@ -404,7 +404,7 @@ statement
 }
 | While m1=m '(' bool_expr ')' m2=m block
 {
-	
+
 }
 ;
 
