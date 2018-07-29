@@ -544,7 +544,7 @@ statement
 		q.PatchSrc2(l.continueList[i], q.size);
 	}
 	q.Add(-1, -1, $m1.id, "goto");
-	//l.reinitialize(100);
+	l.reinitialize(100);
 }
 |	methodCall ';'
 {
