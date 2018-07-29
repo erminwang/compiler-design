@@ -151,6 +151,46 @@ public interface Cmpt379CompilerListener extends ParseTreeListener {
 	 */
 	void exitStatement(Cmpt379CompilerParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#switch_expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitch_expr(Cmpt379CompilerParser.Switch_exprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#switch_expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitch_expr(Cmpt379CompilerParser.Switch_exprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#cases}.
+	 * @param ctx the parse tree
+	 */
+	void enterCases(Cmpt379CompilerParser.CasesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#cases}.
+	 * @param ctx the parse tree
+	 */
+	void exitCases(Cmpt379CompilerParser.CasesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#switchLit}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchLit(Cmpt379CompilerParser.SwitchLitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#switchLit}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchLit(Cmpt379CompilerParser.SwitchLitContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#baseSwitchLit}.
+	 * @param ctx the parse tree
+	 */
+	void enterBaseSwitchLit(Cmpt379CompilerParser.BaseSwitchLitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Cmpt379CompilerParser#baseSwitchLit}.
+	 * @param ctx the parse tree
+	 */
+	void exitBaseSwitchLit(Cmpt379CompilerParser.BaseSwitchLitContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Cmpt379CompilerParser#m}.
 	 * @param ctx the parse tree
 	 */

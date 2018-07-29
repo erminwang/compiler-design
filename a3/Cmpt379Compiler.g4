@@ -160,7 +160,7 @@ public class Quad {
 		}else if (dst == -3) {
 			System.out.println("L_" + label + ": " + "ifFalse" + " " + s.GetName(src1)
 			+ " " + "goto" + " " + "L_" + src2);
-		}else if (src1 == -5) { //print t_6 = fun call 0
+		}else if (src1 == -4) { //print t_6 = fun call 0
 			System.out.println("L_" + label + ": " + s.GetName(dst) + " = "
 			   + op + " call " + src2);
 		}else if (dst == -6) {//dst = -6 means callout function---= "printf" call 2
@@ -171,8 +171,8 @@ public class Quad {
 			System.out.println("L_" + label + ": " + op + " param");
 		}else if (src1 == -9 && op.equals("function")) { //print fucntion name
 			System.out.println(s.GetName(src2) + ":");
-		}else if (src1 == -1 && src2 == -1 && !op.equals("ret")) { // goto L_  instruction
-			System.out.println("L_" + label + ": " + " goto " + "L_" + dst);
+		}else if (src1 == -1 && dst == -1) { // goto L_  instruction
+			System.out.println("L_" + label + ": " + " goto " + "L_" + src2);
 		}else if (src2 == -4 && dst == -1) {
 			System.out.println("L_" + label + ":  = " + s.GetName(src1) + " ret");
 		}else if (src2 == -1) { //it's Assignment op a = b
@@ -266,6 +266,20 @@ public class InstructionSet {
 		sizef++;
 	}
 
+	void MergeTrueList(InstructionSet iset) {
+		for(int i = 0; i < iset.sizet; i++) {
+			this.truelist[sizet] = iset.truelist[i];
+			this.sizet++;
+		}
+	}
+
+	void MergeFalseList(InstructionSet iset) {
+		for(int i = 0; i < iset.sizef; i++) {
+			this.falselist[sizef] = iset.falselist[i];
+			this.sizef++;
+		}
+	}
+
 	void AddToBothList(int trueInst, int falseInst) {
 		truelist[sizet] = trueInst;
 		falselist[sizef] = falseInst;
@@ -285,7 +299,7 @@ public class LoopList{
 		continueList = new int[arraySize];
 		sizeb = 0;
 		sizec = 0;
-		for(int i = 0; i < breakList.length; i++) {
+		for(int i = 0; i < arraySize; i++) {
 			breakList[i] = -1;
 			continueList[i] = -1;
 		}
@@ -300,9 +314,20 @@ public class LoopList{
 		continueList[sizec] = id;
 		sizec++;
 	}
+
+	void reinitialize(int arraySize) {
+		breakList = new int[arraySize];
+		continueList = new int[arraySize];
+		sizeb = 0;
+		sizec = 0;
+		for(int i = 0; i < arraySize; i++) {
+			breakList[i] = -1;
+			continueList[i] = -1;
+		}
+	}
 }
 
-LoopList l = new LoopList(10);
+LoopList l = new LoopList(100);
 
 }
 
@@ -465,18 +490,16 @@ statement
 {
 
 }
-| If '(' bool_expr ')' m block
+| If '(' b=bool_expr ')' m block
 {
-	if($bool_expr.is.truelist[0] != -1) {
-		int trueId = (($bool_expr.is).truelist)[0];
-		q.PatchSrc2(trueId, $m.id);
+	for (int i = 0; i < $b.is.sizet; i++) {
+		q.PatchSrc2($b.is.truelist[i], $m.id);
 		/* System.out.println("trueId is : " + trueId);
 		System.out.println("$m.id is : " + $m.id); */
 	}
 
-	if($bool_expr.is.falselist[0] != -1) {
-		int falseId = (($bool_expr.is).falselist)[0];
-		q.PatchSrc2(falseId, q.size);
+	for (int i = 0; i < $b.is.sizef; i++) {
+		q.PatchSrc2($b.is.falselist[i], q.size);
 		/* System.out.println("q.size is : " + q.size); */
 		/* System.out.println("falseId is : " + falseId); */
 	}
@@ -485,50 +508,53 @@ statement
 {
 
 	for (int i = 0; i < $b.is.sizet; i++) {
-		if ($b.is.truelist[i] != -1) {
-			q.PatchSrc2($b.is.truelist[i], $m1.id);
-		}
+		q.PatchSrc2($b.is.truelist[i], $m1.id);
 	}
 
 	for (int i = 0; i < $b.is.sizef; i++) {
-		if ($b.is.falselist[i] != -1) {
-			q.PatchSrc2($b.is.falselist[i], $m2.id);
-		}
+		q.PatchSrc2($b.is.falselist[i], $m2.id);
 	}
 
 	int nid = $n.id;
 	System.out.println("nid : " + nid);
 	q.PatchSrc2(nid, q.size);
 }
+| Switch switch_expr '{' cases '}'
+{
+	for(int i = 0; i < l.sizeb; i++) {
+		q.PatchSrc2(l.breakList[i], q.size);
+	}
+}
 | While m1=m '(' bool_expr ')' m2=m block
 {
-	System.out.println("$m1.id is : " + $m1.id);
+	/* System.out.println("$m1.id is : " + $m1.id); */
 	if($bool_expr.is.truelist[0] != -1) {
 		int trueId = (($bool_expr.is).truelist)[0];
 		q.PatchSrc2(trueId, $m2.id);
-		/* System.out.println("trueId is : " + trueId);
-		System.out.println("$m.id is : " + $m.id); */
 	}
 
 	if($bool_expr.is.falselist[0] != -1) {
 		int falseId = (($bool_expr.is).falselist)[0];
 		q.PatchSrc2(falseId, q.size + 1);
-		/* System.out.println("q.size is : " + q.size); */
-		/* System.out.println("falseId is : " + falseId); */
 	}
 	for(int i = 0; i < l.sizeb; i++) {
 		q.PatchSrc2(l.breakList[i], q.size + 1);
 	}
 	for(int i = 0; i < l.sizec; i++) {
-		q.PatchSrc2(l.continueList[i], q.size + 1);
+		q.PatchSrc2(l.continueList[i], q.size);
 	}
 	q.Add(-1, -1, $m1.id, "goto");
+	//l.reinitialize(100);
+}
+|	methodCall ';'
+{
+
 }
 | Ret ';'
 {
 	q.Add(-1, -1, -4, "ret");
 }
-| Ret '(' expr ')' ';'
+| Ret expr ';'
 {
 	int id = $expr.id;
 	q.Add(-1, id, -4, "ret");
@@ -549,6 +575,51 @@ statement
 }
 ;
 
+switch_expr
+: expr
+{
+	int id = s.Add(DataType.INT);
+	q.Add(id, $expr.id, -1, "=");
+}
+;
+
+cases returns [int id, int base]
+: c1=cases Case switchLit ':' statements
+{
+	int baseid = $switchLit.baseid;
+	int id = $switchLit.id;
+	q.PatchSrc2(baseid, $c1.base);
+	q.PatchSrc2(id, q.size);
+}
+| Case baseSwitchLit ':' statements
+{
+	int id = $baseSwitchLit.id;
+	q.PatchSrc2(id, q.size);
+	$base = $baseSwitchLit.base;
+}
+;
+
+switchLit returns [int baseid, int id]
+: literal
+{
+	int id2 = s.Add(DataType.INT);
+	$baseid = q.Add(id2, $literal.id, -1, "==");
+	q.Add(-2, id2, q.size + 2, "goto");
+	$id = q.Add(-3, id2, -1, "goto");
+}
+;
+
+baseSwitchLit returns [int id, int base]
+: literal
+{
+	int id2 = s.Add(DataType.INT);
+	$base = id2-2;
+	q.Add(id2, $literal.id, $base, "==");
+	q.Add(-2, id2, q.size + 2, "goto");
+	$id = q.Add(-3, id2, -1, "goto");
+}
+;
+
 m returns [int id]
 :
 {
@@ -566,21 +637,47 @@ n returns [int id]
 ;
 
 bool_expr returns [InstructionSet is]
-: b1=bool_expr '&&' b2=bool_expr
+: b1=bool_expr '&&' m b2=bool_expr
 {
+	InstructionSet instructionSet = new InstructionSet();
 
+	for (int i = 0; i<$b1.is.sizet; i++) {
+		q.PatchSrc2($b1.is.truelist[i], $m.id);
+	}
+
+	instructionSet.MergeFalseList($b1.is);
+	instructionSet.MergeFalseList($b2.is);
+
+	instructionSet.MergeTrueList($b2.is);
+	$is = instructionSet;
 }
-| b1=bool_expr '||' b2=bool_expr
+| b1=bool_expr '||' m b2=bool_expr
 {
+	InstructionSet instructionSet = new InstructionSet();
 
+	for (int i = 0; i<$b1.is.sizef; i++) {
+		q.PatchSrc2($b1.is.falselist[i], $m.id);
+	}
+	instructionSet.MergeTrueList($b1.is);
+	instructionSet.MergeTrueList($b2.is);
+
+	instructionSet.MergeFalseList($b2.is);
+	$is = instructionSet;
+	// System.out.println("$is.falselist is : " + $is.falselist[0]);
 }
-| '!' b1=bool_expr
+| '!' b=bool_expr
 {
+	InstructionSet instructionSet = new InstructionSet();
+	instructionSet.truelist = $b.is.falselist;
+	instructionSet.sizet = $b.is.sizet;
 
+	instructionSet.falselist = $b.is.truelist;
+	instructionSet.sizef = $b.is.sizef;
+	$is = instructionSet;
 }
-| '(' b1=bool_expr ')'
+| '(' b=bool_expr ')'
 {
-
+	$is = $b.is;
 }
 | e1=expr RelOp e2=expr
 {
@@ -727,8 +824,8 @@ expr returns [int id]
 | '!' e1=expr
 {
 	// TODO: need modification
-	$id = s.Add(s.GetType($e1.id));
-	q.Add($id, $e1.id, -1, "!");
+	// $id = s.Add(s.GetType($e1.id));
+	// q.Add($id, $e1.id, -1, "!");
 }
 | methodCall
 {
@@ -739,11 +836,12 @@ expr returns [int id]
 methodCall returns [int id]
 : Ident '(' arguments ')'
 {
-	int id2 = s.Add(DataType.INT);   //make a t_
-	$id = q.Add(id2, -5, $arguments.count, $Ident.text);
+	$id = s.Add(DataType.INT);   //make a t_
+	q.Add($id, -4, $arguments.count, $Ident.text);
 }
 | Callout '(' Str nextCalloutArgs ')'
 {
+	$id = s.insert($Str.text, DataType.INT);
 	q.Add(-6, -1, $nextCalloutArgs.count, $Str.text);
 }
 ;
@@ -754,6 +852,7 @@ arguments returns [int count]
 	$count = $nextArgs.count + 1;
 	int id = $expr.id;
 	q.Add(-7, id, -1, "param");
+	System.out.println("^^^^^^^^^^ param id is : " + id);
 }
 |
 {
@@ -767,6 +866,7 @@ nextArgs returns [int count]
 	$count = $nexta.count + 1;
 	int id = $expr.id;
 	q.Add(-7, id, -1, "param");
+	System.out.println("^^^^^^^^^^ param id is : " + id);
 }
 |
 {
