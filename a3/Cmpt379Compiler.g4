@@ -486,6 +486,18 @@ statement
 {
 	q.Add($location.id, $expr.id, -1, "=");
 }
+| location '+=' expr ';'
+{
+	int id = s.Add(DataType.INT);
+	q.Add(id, $location.id, $expr.id, "+");
+	q.Add($location.id, id, -1, "=");
+}
+| location '-=' expr ';'
+{
+	int id = s.Add(DataType.INT);
+	q.Add(id, $location.id, $expr.id, "-");
+	q.Add($location.id, id, -1, "=");
+}
 | block
 {
 
@@ -528,13 +540,13 @@ statement
 | While m1=m '(' bool_expr ')' m2=m block
 {
 	/* System.out.println("$m1.id is : " + $m1.id); */
-	if($bool_expr.is.truelist[0] != -1) {
-		int trueId = (($bool_expr.is).truelist)[0];
+	for (int i = 0; i < $bool_expr.is.sizet; i++) {
+		int trueId = $bool_expr.is.truelist[i];
 		q.PatchSrc2(trueId, $m2.id);
 	}
 
-	if($bool_expr.is.falselist[0] != -1) {
-		int falseId = (($bool_expr.is).falselist)[0];
+	for (int i = 0; i < $bool_expr.is.sizef; i++) {
+		int falseId = $bool_expr.is.falselist[i];
 		q.PatchSrc2(falseId, q.size + 1);
 	}
 	for(int i = 0; i < l.sizeb; i++) {

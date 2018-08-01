@@ -15,11 +15,7 @@ void main ( )
 		{
 			break;
 		}
-		if(b > 10) {
-			x = 90;
-		}
 		x = x + 1;
-		c = c - 1;
 	}
 	
 

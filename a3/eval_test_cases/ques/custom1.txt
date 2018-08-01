@@ -3,7 +3,7 @@ class Program {
 int a , b, c;
 
 int fun(int a) {
-    a = a+1;
+    a-=1;
     return 1;
 }
 
@@ -16,7 +16,7 @@ void dos ( )
          case 3 :
             b = a;
       }
-	
+
 
 }
 }

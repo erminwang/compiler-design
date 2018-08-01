@@ -4,9 +4,9 @@ int a , b, c;
 
 void dos ( )
 {
-        if ( a > 0 )
+        if ( a && b )
 	{
-		c = a / b;
+		c+=a;
 	}
 	
 

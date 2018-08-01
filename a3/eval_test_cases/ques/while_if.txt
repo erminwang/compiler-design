@@ -6,13 +6,17 @@ int g = 3;
 
     void cust ( )
     {
+        a += b;
+        b-=c;
         while ( a > 0 )
         {
             g = g + 1;
             while(b < 3) {
                 c=c+1;
                 b=b+3;
+                break;
             }
         }
+        a = b;
     }
 }
