@@ -1,0 +1,29 @@
+class Program {
+
+	int a[10];
+
+	void fun (int n) {
+
+		if (n >= 0) {
+			callout ("printf", "%d is a positive number\n", n);
+		} else {
+			callout ("printf", "%d is a negative number\n", n);
+		}
+
+		return;
+	}
+
+
+
+
+	void main () {
+		a[2] = 16;
+
+		fun(a[2]);
+		
+
+		return;
+
+	}
+
+}

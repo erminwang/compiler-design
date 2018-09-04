@@ -1,0 +1,19 @@
+class Program {
+
+	int i, j;
+	void main() {
+        i = 8;
+		switch i {
+            case 1:
+                callout("printf", "i --- case 1: %d  \n", i);
+                break;
+            case 5:
+                callout("printf", "i --- case 3: %d  \n", i);
+            case 9:
+                callout("printf", "i --- case 9: %d  \n", i);
+        }
+		return;
+	}
+	
+
+}

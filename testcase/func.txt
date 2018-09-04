@@ -1,0 +1,21 @@
+class Program {
+
+	int i, j;
+	void main() {
+		i = 1;
+		j = 10;
+		while(i < 10) {
+			callout("printf", "i is : %d  \n", i);
+	
+			i = i + 1;
+			if(i == 5) {
+				break;
+			}
+			
+		}
+
+		return;
+	}
+	
+
+}

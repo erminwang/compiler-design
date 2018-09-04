@@ -1,0 +1,3 @@
+easy: 50%
+medium:30%
+difficult:20%

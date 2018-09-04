@@ -1,0 +1,15 @@
+class Program {
+	
+	void main () {
+		int i;
+		int j;
+
+		i = 2;
+		j = 2 * i;
+
+		callout("printf", "%d\n", j);
+
+		return;
+	}
+
+}

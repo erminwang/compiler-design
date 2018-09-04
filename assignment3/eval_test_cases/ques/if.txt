@@ -4,11 +4,17 @@ int a , b, c;
 
 void dos ( )
 {
-        if ( a > 0 )
+    if ( a )
 	{
-		c = a / b;
+  c = 0;
+
 	}
-	
+  else {
+    if(b){
+      a = 1;
+    }
+  }
+
 
 }
 }
